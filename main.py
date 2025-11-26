@@ -6,6 +6,7 @@ pdf_reader = PdfReader(pdf)
 
 print("Welcome to Text-To-Speech!")
 text_to_speech = pyttsx3.init()
+rate = 200  # 200 WPM is the default rate of speech
 
 read_more_pages = True
 while read_more_pages:
@@ -23,7 +24,7 @@ while read_more_pages:
 
     page_to_read = pdf_reader.pages[page_num]
 
-    change_rate = input("Would you like to change the speech rate? Enter 'YES' to change it: ")
+    change_rate = input(f"The current speech rate is {rate} WPM.\nWould you like to change the speech rate? Enter 'YES' to change it: ")
     if change_rate.lower() in ["yes", "y"]:
         rate = int(input("Enter new speech rate (the default is 200 WPM): "))
         while True:
@@ -35,7 +36,12 @@ while read_more_pages:
 
     text = page_to_read.extract_text()
     text_to_speech.say(text)
-    text_to_speech.runAndWait()
+    print("\nYou can stop the speech process at anytime by pressing Ctrl + C\n")
+    try:
+        text_to_speech.runAndWait()
+    except KeyboardInterrupt:
+        text_to_speech.stop()
+        print("Speech has been terminated.\n")
     
     answer = input("Would you like to read more pages? Enter 'YES' to continue: ")
     if answer.lower() not in ["yes", "y"]:

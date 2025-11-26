@@ -9,10 +9,11 @@ text_to_speech = pyttsx3.init()
 
 read_more_pages = True
 while read_more_pages:
-    print("Ex: To read a specific page, enter the current page number (in the PDF reader, not the actual PDF) and subtract one.\n")
+    print("Ex: To read a specific page, enter the current page number (in the PDF reader, not the actual PDF).\n")
     while True:
         try:
             page_num = int(input("Enter page number: "))
+            page_num -= 1
             if 0 <= page_num < len(pdf_reader.pages):
                 break
             else:
@@ -22,12 +23,22 @@ while read_more_pages:
 
     page_to_read = pdf_reader.pages[page_num]
 
+    change_rate = input("Would you like to change the speech rate? Enter 'YES' to change it: ")
+    if change_rate.lower() in ["yes", "y"]:
+        rate = int(input("Enter new speech rate (the default is 200 WPM): "))
+        while True:
+            try:
+                text_to_speech.setProperty('rate', rate)
+                break
+            except ValueError:
+                print("Invalid input! Please enter a valid integer!\n")
+
     text = page_to_read.extract_text()
     text_to_speech.say(text)
     text_to_speech.runAndWait()
     
     answer = input("Would you like to read more pages? Enter 'YES' to continue: ")
-    if answer != "YES" or answer != "yes" or answer != "y" or answer != "Y":
+    if answer.lower() not in ["yes", "y"]:
         read_more_pages = False
     print("\n")
 
